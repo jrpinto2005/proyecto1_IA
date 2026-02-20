@@ -28,8 +28,27 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    # TODO: Add your code here
-    utils.raiseNotDefined()
+    from algorithms.utils import Stack
+    frontier = Stack()
+    visitados = set()
+    
+    estado_incio = problem.getStartState()
+    frontier.push((estado_incio, []))
+    
+    while not frontier.isEmpty():
+        estado, acciones = frontier.pop()
+        
+        if estado in visitados:
+            continue
+        visitados.add(estado)
+        
+        if problem.isGoalState(estado):
+            return acciones
+        
+        for siguiente, accion, costo, in problem.getSuccessors(estado):
+            if siguiente not in visitados:
+                frontier.push((siguiente, acciones +[accion]))
+    return []
 
 
 def breadthFirstSearch(problem: SearchProblem):
