@@ -100,15 +100,46 @@ def uniformCostSearch(problem: SearchProblem):
                 frontera.update((siguiente, acciones + [accion], nuevo_costo), nuevo_costo)
     return []
 
-
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
+def aStarSearch(problem, heuristic):
     """
-    Search the node that has the lowest combined cost and heuristic first.
+    Implementación de A* basada directamente en Uniform Cost Search.
+    La prioridad en la frontera es f(n) = g(n) + h(n).
     """
-    # TODO: Add your code here
-    # utils.raiseNotDefined()
 
+    estado_inicial = problem.getStartState()
 
+    frontera = PriorityQueue()
+    visitados = set()
+
+    # (estado, acciones, costo_real)
+    costo_inicial = 0
+    frontera.push((estado_inicial, [], costo_inicial),costo_inicial + heuristic(estado_inicial, problem))
+
+    costos = {estado_inicial: 0}
+
+    while not frontera.isEmpty():
+        estado, acciones, costo_real = frontera.pop()
+
+        if estado in visitados:
+            continue
+        visitados.add(estado)
+
+        if problem.isGoalState(estado):
+            return acciones
+
+        for siguiente, accion, costo_paso in problem.getSuccessors(estado):
+
+            nuevo_costo_real = costo_real + costo_paso
+
+            if siguiente not in costos or nuevo_costo_real < costos[siguiente]:
+                costos[siguiente] = nuevo_costo_real
+                nuevas_acciones = acciones + [accion]
+
+                prioridad = nuevo_costo_real + heuristic(siguiente, problem)
+
+                frontera.push((siguiente, nuevas_acciones, nuevo_costo_real),prioridad)
+
+    return []
 # Abbreviations (you can use them for the -f option in main.py)
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
