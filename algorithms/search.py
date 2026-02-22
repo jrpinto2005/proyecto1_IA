@@ -1,5 +1,6 @@
 from algorithms.problems import SearchProblem
 import algorithms.utils as utils
+from algorithms.utils import PriorityQueue
 from world.game import Directions
 from algorithms.heuristics import nullHeuristic
 
@@ -63,9 +64,27 @@ def uniformCostSearch(problem: SearchProblem):
     """
     Search the node of least total cost first.
     """
-
-    # TODO: Add your code here
-    utils.raiseNotDefined()
+    frontera = PriorityQueue()
+    visitados = set()
+    
+    estado_incial = problem.getStartState()
+    frontera.push((estado_incial, [], 0), 0)
+    
+    while not frontera.isEmpty():
+        estado, acciones, costo_total = frontera.pop()
+        
+        if estado in visitados:
+            continue
+        visitados.add(estado)
+        
+        if problem.isGoalState(estado):
+            return acciones
+        
+        for siguiente, accion, costo, in problem.getSuccessors(estado):
+            if siguiente not in visitados:
+                nuevo_costo = costo_total + costo
+                frontera.update((siguiente, acciones + [accion], nuevo_costo), nuevo_costo)
+    return []
 
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
@@ -73,7 +92,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     Search the node that has the lowest combined cost and heuristic first.
     """
     # TODO: Add your code here
-    utils.raiseNotDefined()
+    # utils.raiseNotDefined()
 
 
 # Abbreviations (you can use them for the -f option in main.py)
